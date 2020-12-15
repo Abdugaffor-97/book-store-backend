@@ -53,25 +53,65 @@ commentsRouter.post("/:bookId/comments", async (req, res, next) => {
   }
 });
 
-commentsRouter.get("/:bbokId/comments", async (req, res, next) => {
+commentsRouter.get("/:bookId/comments", async (req, res, next) => {
   try {
     const books = await getBooks();
     const comments = await getComments();
 
-    if (req.query && req.query.category) {
-      const filteredBooks = books.filter(
-        (book) =>
-          book.hasOwnProperty("category") &&
-          book.category === req.query.category
-      );
-      res.send(filteredBooks);
+    const reqBook = books.find((book) => book.asin === req.params.bookId);
+    const bookCoomments = reqBook.comments;
+
+    const filteredComments = comments.filter((comment) =>
+      bookCoomments.includes(comment)
+    );
+    console.log(filteredComments);
+
+    if (filteredComments.length) {
+      res.send(filteredComments);
     } else {
-      res.send(books);
+      res.send("Comments does not exists");
     }
   } catch (error) {
     console.log(error);
     next(error);
   }
 });
+
+commentsRouter.delete(
+  "/:bookId/comments/:commentId",
+  async (req, res, next) => {
+    try {
+      const books = await getBooks();
+      const comments = await getComments();
+
+      const newComments = comments.filter(
+        // Remove spesific comment
+        (comment) => comment.commentId !== req.params.commentId
+      );
+      const bookFound = books.find((book) => book.asin === req.params.bookId);
+      bookFound.comments = bookFound.comments.filter(
+        // Remove comment id from book
+        (comment) => comment !== req.params.commentId
+      );
+
+      if (bookFound) {
+        const filteredBooks = books.filter(
+          (book) => book.asin !== req.params.asin
+        );
+
+        await writeBooks(filteredBooks);
+        await writeComments(newComments);
+        res.status(204).send();
+      } else {
+        const error = new Error();
+        error.httpStatusCode = 404;
+        next(error);
+      }
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+);
 
 module.exports = commentsRouter;
