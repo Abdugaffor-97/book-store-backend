@@ -69,7 +69,7 @@ commentsRouter.get("/:bookId/comments", async (req, res, next) => {
     if (filteredComments.length) {
       res.send(filteredComments);
     } else {
-      res.send("Comments does not exists");
+      res.status(404).send();
     }
   } catch (error) {
     console.log(error);
