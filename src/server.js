@@ -13,6 +13,8 @@ const {
 
 const server = express();
 
+const { models, connectDB } = require("./models");
+
 const port = process.env.PORT || 3001; // the fallback is for local development, heroku will use his own port, something like 12312, because imagine how many processes are running on the same machine there
 
 server.use(express.json());
@@ -30,7 +32,7 @@ const corsOptions = {
     }
   },
 };
-server.use(cors(corsOptions)); // CROSS ORIGIN RESOURCE SHARING
+// server.use(cors(corsOptions)); // CROSS ORIGIN RESOURCE SHARING
 
 //ROUTES
 
@@ -44,10 +46,12 @@ server.use(genericErrorHandler);
 
 console.log(listEndpoints(server));
 
-server.listen(port, () => {
-  if (process.env.NODE_ENV === "production") {
-    console.log("Running on cloud on port", port);
-  } else {
-    console.log(`Running locally on port http://localhost:${port}`);
-  }
+connectDB().then(async () => {
+  server.listen(port, () => {
+    if (process.env.NODE_ENV === "production") {
+      console.log("Running on cloud on port", port);
+    } else {
+      console.log(`Running locally on port http://localhost:${port}`);
+    }
+  });
 });
