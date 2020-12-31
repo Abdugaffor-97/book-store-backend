@@ -13,14 +13,13 @@ const {
 
 const server = express();
 
-const { models, connectDB } = require("./models");
+const { connectDB } = require("./models");
 
 const port = process.env.PORT || 3001; // the fallback is for local development, heroku will use his own port, something like 12312, because imagine how many processes are running on the same machine there
 
 server.use(express.json());
 
 const whiteList = [process.env.FE_URL];
-console.log("process.env.FE_URL", process.env.FE_URL);
 const corsOptions = {
   origin: function (origin, callback) {
     if (whiteList.indexOf(origin) !== -1) {

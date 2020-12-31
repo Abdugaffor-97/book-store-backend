@@ -2,13 +2,6 @@ const express = require("express");
 const uniqid = require("uniqid");
 const { check, validationResult } = require("express-validator");
 
-const {
-  getBooks,
-  writeBooks,
-  getComments,
-  writeComments,
-} = require("../../fsUtilities");
-
 const commentsRouter = express.Router();
 
 commentsRouter.post("/:bookId/comments", async (req, res, next) => {

@@ -2,48 +2,45 @@ const express = require("express");
 const { check, validationResult } = require("express-validator");
 const BookModel = require("../../models/bookModel");
 
-const { getBooks, writeBooks } = require("../../fsUtilities");
-
 const booksRouter = express.Router();
 
 booksRouter.get("/", async (req, res, next) => {
   try {
-    console.log("Started");
-    const books = await BookModel.find({});
-    console.log(books);
-
     if (req.query && req.query.category) {
-      const filteredBooks = books.filter(
-        (book) =>
-          book.hasOwnProperty("category") &&
-          book.category === req.query.category
-      );
-      res.send(filteredBooks);
+      const books = await BookModel.find({ category: req.query.category });
+      console.log(books);
+      res.send(books);
     } else if (req.query.preview === "all") {
+      const scifi = await BookModel.find({ category: "scifi" });
+      const romance = await BookModel.find({ category: "romance" });
+      const horror = await BookModel.find({ category: "horror" });
+      const history = await BookModel.find({ category: "history" });
+      const fantasy = await BookModel.find({ category: "fantasy" });
       const categorySelected = [
         {
           category: "scifi",
-          data: books.filter((book) => book.category === "scifi").slice(0, 8),
+          data: scifi.slice(0, 8),
         },
         {
           category: "romance",
-          data: books.filter((book) => book.category === "romance").slice(0, 8),
+          data: romance.slice(0, 8),
         },
         {
           category: "horror",
-          data: books.filter((book) => book.category === "horror").slice(0, 8),
+          data: horror.slice(0, 8),
         },
         {
           category: "history",
-          data: books.filter((book) => book.category === "history").slice(0, 8),
+          data: history.slice(0, 8),
         },
         {
           category: "fantasy",
-          data: books.filter((book) => book.category === "fantasy").slice(0, 8),
+          data: fantasy.slice(0, 8),
         },
       ];
       res.send(categorySelected);
     } else {
+      const books = await BookModel.find();
       res.send(books);
     }
   } catch (error) {
@@ -52,18 +49,13 @@ booksRouter.get("/", async (req, res, next) => {
   }
 });
 
-booksRouter.get("/:asin", async (req, res, next) => {
+booksRouter.get("/:_id", async (req, res, next) => {
   try {
-    const books = await getBooks();
-
-    const bookFound = books.find((book) => book.asin === req.params.asin);
-
-    if (bookFound) {
-      res.send(bookFound);
+    const book = await BookModel.findById(req.params._id);
+    if (book) {
+      res.status(200).send(book);
     } else {
-      const err = new Error();
-      err.httpStatusCode = 404;
-      next(err);
+      res.status(404);
     }
   } catch (error) {
     console.log(error);
@@ -80,10 +72,7 @@ booksRouter.post("/", async (req, res, next) => {
       error.httpStatusCode = 400;
       next(error);
     } else {
-      const newBook = new BookModel({
-        ...req.body,
-      });
-
+      const newBook = new BookModel(req.body);
       try {
         await newBook.save();
         res.status(201).send(newBook);
@@ -98,33 +87,17 @@ booksRouter.post("/", async (req, res, next) => {
   }
 });
 
-booksRouter.put("/:_id", async (req, res, next) => {
-  try {
-    const validatedData = matchedData(req);
-    const books = await getBooks();
-
-    const bookIndex = books.findIndex((book) => book._id === req.params._id);
-
-    if (bookIndex !== -1) {
-      // book found
-      const updatedBooks = [
-        ...books.slice(0, bookIndex),
-        { ...books[bookIndex], ...validatedData },
-        ...books.slice(bookIndex + 1),
-      ];
-      await writeBooks(updatedBooks);
-      res.send(updatedBooks);
-    } else {
-      const err = new Error();
-      err.httpStatusCode = 404;
-      next(err);
-    }
-  } catch (error) {
-    console.log(error);
-    const err = new Error("An error occurred while reading from the file");
-    next(err);
-  }
-});
+// booksRouter.put("/:_id", async (req, res, next) => {
+//   try {
+//     BookModel.findOneAndUpdate(req.params._id, { ...req.body });
+//     // console.log(book);
+//     res.send("Ksksks");
+//   } catch (error) {
+//     console.log(error);
+//     const err = new Error("An error occurred while reading from the file");
+//     next(err);
+//   }
+// });
 
 booksRouter.delete("/:_id", async (req, res, next) => {
   try {
@@ -132,10 +105,12 @@ booksRouter.delete("/:_id", async (req, res, next) => {
     if (book) {
       try {
         await BookModel.deleteOne({ _id: req.params._id });
-        res.send("deleted");
+        res.send("Deleted");
       } catch (error) {
         next(error);
       }
+    } else {
+      res.status(404).send("Not Found");
     }
   } catch (error) {
     console.log(error);
