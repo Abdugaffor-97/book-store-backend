@@ -1,6 +1,7 @@
 const express = require("express");
 const uniqid = require("uniqid");
 const { check, validationResult } = require("express-validator");
+const CommentModel = require("../../models/commentModel");
 
 const commentsRouter = express.Router();
 
@@ -13,31 +14,9 @@ commentsRouter.post("/:bookId/comments", async (req, res, next) => {
       error.httpStatusCode = 400;
       next(error);
     } else {
-      const comments = await getComments();
-      const books = await getBooks();
-
-      const comment = {
-        commentId: uniqid(),
-        date: new Date(),
-        ...req.body,
-      };
-
-      books.forEach((book) => {
-        if (book.asin === req.params.bookId) {
-          console.log(true);
-          if (!book.comments) {
-            book.comments = [];
-            book.comments.push(comment.commentId);
-          } else {
-            book.comments.push(comment.commentId);
-          }
-        }
-      });
-
-      comments.push(comment);
-      await writeComments(comments);
-      await writeBooks(books);
-      res.status(201).send(comment.commentId);
+      const comment = new CommentModel(req.body);
+      comment.save();
+      res.send(comment._id);
     }
   } catch (error) {
     console.log(error);
