@@ -1,9 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const listEndpoints = require("express-list-endpoints");
+const mongoose = require("mongoose");
 
 const booksRoutes = require("./services/books");
 const commentsRoutes = require("./services/comments");
+const usersRoutes = require("./services/users");
 
 const {
   notFoundHandler,
@@ -36,6 +38,7 @@ server.use(cors(corsOptions)); // CROSS ORIGIN RESOURCE SHARING
 
 server.use("/books", booksRoutes);
 server.use("/books", commentsRoutes);
+server.use("/users", usersRoutes);
 
 // ERROR HANDLERS
 server.use(badRequestHandler);
@@ -43,6 +46,8 @@ server.use(notFoundHandler);
 server.use(genericErrorHandler);
 
 console.log(listEndpoints(server));
+
+// mongoose.connect(process.env.MONGO);
 
 server.listen(port, () => {
   if (process.env.NODE_ENV === "production") {
