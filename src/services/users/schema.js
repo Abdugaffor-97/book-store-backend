@@ -6,6 +6,15 @@ const UserSchema = new Schema(
     surname: { type: String, required: true },
     email: String,
     age: { type: Number, min: [18, "Too young"], default: 18 },
+    purchaseHistory: [
+      {
+        asin: String,
+        title: String,
+        price: Number,
+        category: String,
+        date: Date,
+      },
+    ],
   },
   { timestamps: true }
 );

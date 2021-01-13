@@ -1,7 +1,51 @@
 const express = require("express");
 const UserModel = require("./schema");
+const BookModel = require("../books/schema");
+const mongoose = require("mongoose");
 
 const userRouter = express.Router();
+
+userRouter.delete("/:id/purchaseHistory/:bookId", async (req, res, next) => {
+  try {
+    await UserModel.findByIdAndUpdate(req.params.id, {
+      $pull: {
+        purchaseHistory: { _id: mongoose.Types.ObjectId(req.params.bookId) },
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+userRouter.get("/:id/purchaseHistory", async (req, res, next) => {
+  try {
+    const { purchaseHistory } = await UserModel.findById(req.params.id);
+    res.send(purchaseHistory);
+  } catch (error) {
+    next(error);
+  }
+});
+
+userRouter.post("/:id/purchaseHistory", async (req, res, next) => {
+  try {
+    const bookId = req.body.bookId;
+
+    const purchasedBook = await BookModel.findById(bookId, { _id: 0 });
+
+    const bookToAdd = { ...purchasedBook.toObject(), date: new Date() };
+
+    const modifiedUser = await UserModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $push: { purchaseHistory: bookToAdd },
+      },
+      { runValidators: true, new: true }
+    );
+    res.send(modifiedUser);
+  } catch (error) {
+    next(error);
+  }
+});
 
 userRouter.delete("/:id", async (req, res, next) => {
   try {
