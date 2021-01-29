@@ -9,8 +9,6 @@ You can start from the version we built this morning.
 A comment could be posted by a user to whatever book he likes.
 A comment is defined by:
     
-    
-    `
     - CommentID //Server Generated
     - UserName
     - Text
@@ -21,8 +19,7 @@ A comment is defined by:
     GET /books/id/comments => gets all the comments for book {id}
     DELETE /books/comments/id => delete comment {id}
     
-    
-    `
+
 //FRONTEND
 You need now to connect your previously created React App for Strive books.
 Modify the previous application in order to use your own API.
