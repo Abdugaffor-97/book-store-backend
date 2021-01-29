@@ -3,6 +3,7 @@
 
 
 Upgrade Strive Books API!
+`
     You are in charge of including new features in the Strive Books API.
     You can start from the version we built this morning.
     A comment could be posted by a user to whatever book he likes.
@@ -23,3 +24,4 @@ Upgrade Strive Books API!
     Deploy everything on 2 instances on HEROKU (one for client, one for server)
     If you have troubles with running on heroku remind to configure start scripts for both of them
     Configure CORS to make them work together.
+`
