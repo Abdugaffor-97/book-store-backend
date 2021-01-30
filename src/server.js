@@ -15,7 +15,7 @@ const {
 
 const server = express();
 
-const port = process.env.PORT || 3001; // the fallback is for local development, heroku will use his own port, something like 12312, because imagine how many processes are running on the same machine there
+const port = process.env.PORT || 3003; // the fallback is for local development, heroku will use his own port, something like 12312, because imagine how many processes are running on the same machine there
 
 server.use(express.json());
 

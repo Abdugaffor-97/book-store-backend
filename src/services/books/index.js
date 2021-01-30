@@ -11,7 +11,6 @@ booksRouter.get("/", async (req, res, next) => {
     const books = await BookModel.find(query.criteria)
       .skip(query.options.skip)
       .limit(query.options.limit);
-
     res.send({ next: query.links("", total)["next"], books });
   } catch (error) {
     console.log(error);
