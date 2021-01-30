@@ -56,7 +56,7 @@ mongoose
       if (process.env.NODE_ENV === "production") {
         console.log("Running on cloud on port", port);
       } else {
-        console.log(`Running locally on port http://localhost:${port}`);
+        console.log(`Running locally on url http://localhost:${port}`);
       }
     })
   );
