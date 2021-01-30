@@ -1,5 +1,5 @@
 {
-  "name": "m5-d7-heroku",
+  "name": "strive-books-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,7 +10,7 @@
     "start": "node ./src/server.js"
   },
   "keywords": [],
-  "author": "Riccardo Gulin",
+  "author": "Abdug'affor Abdurahimov",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
@@ -19,7 +19,7 @@
     "express-validator": "^6.6.0",
     "fs-extra": "^9.0.1",
     "mongoose": "^5.11.8",
-    "uniqid": "^5.2.0"
+    "query-to-mongo": "^0.10.1"
   },
   "devDependencies": {
     "dotenv": "^8.2.0",

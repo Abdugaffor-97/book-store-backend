@@ -1,9 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const listEndpoints = require("express-list-endpoints");
+const mongoose = require("mongoose");
 
 const booksRoutes = require("./services/books");
-const commentsRoutes = require("./services/comments");
+// const commentsRoutes = require("./services/comments");
+// const usersRoutes = require("./services/users");
 
 const {
   notFoundHandler,
@@ -18,7 +20,6 @@ const port = process.env.PORT || 3001; // the fallback is for local development,
 server.use(express.json());
 
 const whiteList = [process.env.FE_URL];
-console.log("process.env.FE_URL", process.env.FE_URL);
 const corsOptions = {
   origin: function (origin, callback) {
     if (whiteList.indexOf(origin) !== -1) {
@@ -35,7 +36,8 @@ server.use(cors(corsOptions)); // CROSS ORIGIN RESOURCE SHARING
 //ROUTES
 
 server.use("/books", booksRoutes);
-server.use("/books", commentsRoutes);
+// server.use("/comments", commentsRoutes);
+// server.use("/users", usersRoutes);
 
 // ERROR HANDLERS
 server.use(badRequestHandler);
@@ -44,10 +46,17 @@ server.use(genericErrorHandler);
 
 console.log(listEndpoints(server));
 
-server.listen(port, () => {
-  if (process.env.NODE_ENV === "production") {
-    console.log("Running on cloud on port", port);
-  } else {
-    console.log(`Running locally on port http://localhost:${port}`);
-  }
-});
+mongoose
+  .connect(process.env.DATABASE_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(
+    server.listen(port, () => {
+      if (process.env.NODE_ENV === "production") {
+        console.log("Running on cloud on port", port);
+      } else {
+        console.log(`Running locally on url http://localhost:${port}`);
+      }
+    })
+  );
