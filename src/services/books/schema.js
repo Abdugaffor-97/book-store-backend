@@ -1,13 +1,11 @@
 const { Schema, model } = require("mongoose");
 
-const BookSchema = new Schema(
-  {
-    asin: { type: String, required: true },
-    surname: { type: String, required: true },
-    email: String,
-    age: { type: Number, min: [18, "Too young"], default: 18 },
-  },
-  { timestamps: true }
-);
+const BookSchema = new Schema({
+  title: { type: String, required: true },
+  email: String,
+  img: { type: String, required: true },
+  price: { type: Number, required: true },
+  category: { type: String, required: true },
+});
 
-module.exports = model("Books", BookSchema); // Bounded to users collection
+module.exports = model("Book", BookSchema);
