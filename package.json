@@ -13,6 +13,8 @@
   "author": "Abdug'affor Abdurahimov",
   "license": "ISC",
   "dependencies": {
+    "atob": "^2.1.2",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-list-endpoints": "^4.0.1",

@@ -1,11 +1,13 @@
 const { Schema, model } = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const UserSchema = new Schema(
   {
     name: { type: String, required: true },
     surname: { type: String, required: true },
-    email: String,
-    age: { type: Number, min: [18, "Too young"], default: 18 },
+    password: { type: String, required: true, minlength: 8 },
+    email: { type: String, unique: true },
+    role: { type: String, enum: ["Admin", "User"], required: true },
     purchaseHistory: [
       {
         asin: String,
@@ -19,4 +21,37 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = model("User", UserSchema); // Bounded to users collection
+UserSchema.methods.toJSON = function () {
+  const user = this;
+  const userObj = user.toObject();
+
+  delete userObj.password;
+  delete userObj.__v;
+
+  return userObj;
+};
+
+UserSchema.pre("save", async function (next) {
+  const user = this;
+  const plainPassword = user.password;
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(plainPassword, 10);
+  }
+  next();
+});
+
+UserSchema.statics.findByCredentials = async function (email, password) {
+  const user = await userModel.findOne({ email });
+
+  if (user) {
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (isMatch) return user;
+    return null;
+  }
+  return null;
+};
+
+const userModel = model("User", UserSchema);
+
+module.exports = userModel;

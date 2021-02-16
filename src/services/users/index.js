@@ -2,8 +2,37 @@ const express = require("express");
 const UserModel = require("./schema");
 const BookModel = require("../books/schema");
 const mongoose = require("mongoose");
+const { basic } = require("../auth");
 
 const userRouter = express.Router();
+
+userRouter.post("/register", async (req, res, next) => {
+  try {
+    const newUser = new UserModel(req.body);
+    const { _id } = await newUser.save();
+
+    res.status(201).send(_id);
+  } catch (error) {
+    next(error);
+  }
+});
+
+userRouter.get("/me", basic, async (req, res, next) => {
+  try {
+    res.send(req.user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+userRouter.delete("/me", basic, async (req, res, next) => {
+  try {
+    await req.user.deleteOne();
+    res.status(204).send("Deleted");
+  } catch (error) {
+    next(error);
+  }
+});
 
 userRouter.delete("/:id/purchaseHistory/:bookId", async (req, res, next) => {
   try {
@@ -69,22 +98,9 @@ userRouter.put("/:id", async (req, res, next) => {
   }
 });
 
-userRouter.post("/", async (req, res, next) => {
-  try {
-    // const newUser = new UserModel({ name: "Al", surname: "la" });
-    const newUser = new UserModel(req.body);
-    const { _id } = await newUser.save();
-
-    res.status(201).send(_id);
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-});
-
 userRouter.get("/", async (req, res, next) => {
   try {
-    const users = await UserModel.find();
+    const users = await UserModel.find({ role: "Admin" });
     res.send(users);
   } catch (error) {
     console.log(error);

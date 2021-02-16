@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const booksRoutes = require("./services/books");
 const cartsRoutes = require("./services/carts");
 // const commentsRoutes = require("./services/comments");
-// const usersRoutes = require("./services/users");
+const usersRoutes = require("./services/users");
 
 const {
   notFoundHandler,
@@ -39,7 +39,7 @@ server.use(cors(corsOptions)); // CROSS ORIGIN RESOURCE SHARING
 server.use("/books", booksRoutes);
 server.use("/carts", cartsRoutes);
 // server.use("/comments", commentsRoutes);
-// server.use("/users", usersRoutes);
+server.use("/users", usersRoutes);
 
 // ERROR HANDLERS
 server.use(badRequestHandler);
