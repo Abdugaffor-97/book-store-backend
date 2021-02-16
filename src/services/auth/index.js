@@ -23,6 +23,16 @@ const basicAuthMiddleware = async (req, res, next) => {
   }
 };
 
+const adminMiddleware = async (req, res, next) => {
+  if (req.user && req.user.role === "Admin") {
+    next();
+  } else {
+    const err = new Error("Only Admins Can Access");
+    next(err);
+  }
+};
+
 module.exports = {
   basic: basicAuthMiddleware,
+  admin: adminMiddleware,
 };

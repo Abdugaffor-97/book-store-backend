@@ -40,7 +40,7 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-UserSchema.statics.findByCredentials = async function (email, password) {
+UserSchema.statics.findByCredential = async function (email, password) {
   const user = await userModel.findOne({ email });
 
   if (user) {

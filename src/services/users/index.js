@@ -2,7 +2,7 @@ const express = require("express");
 const UserModel = require("./schema");
 const BookModel = require("../books/schema");
 const mongoose = require("mongoose");
-const { basic } = require("../auth");
+const { basic, admin } = require("../auth");
 
 const userRouter = express.Router();
 
@@ -98,9 +98,9 @@ userRouter.put("/:id", async (req, res, next) => {
   }
 });
 
-userRouter.get("/", async (req, res, next) => {
+userRouter.get("/", admin, async (req, res, next) => {
   try {
-    const users = await UserModel.find({ role: "Admin" });
+    const users = await UserModel.find();
     res.send(users);
   } catch (error) {
     console.log(error);
