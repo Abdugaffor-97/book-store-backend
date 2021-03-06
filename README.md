@@ -32,5 +32,5 @@ Configure CORS to make them work together.
 .env vvariables :
 
 - FE_URL= ~prod/dev
-- DATABASE_URL= ~proddev
+- DATABASE_URL= ~prod/dev
 - PORT= ~ development
