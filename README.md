@@ -28,3 +28,9 @@ Deploy everything on 2 instances on HEROKU (one for client, one for server)
 If you have troubles with running on heroku remind to configure start scripts for both of them
 Configure CORS to make them work together.
 
+
+.env vvariables :
+
+- FE_URL= ~prod/dev
+- DATABASE_URL= ~proddev
+- PORT= ~ development
